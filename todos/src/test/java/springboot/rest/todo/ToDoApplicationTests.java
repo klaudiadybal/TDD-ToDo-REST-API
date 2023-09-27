@@ -9,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+
+import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,6 +62,25 @@ class ToDoApplicationTests {
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(page.size()).isEqualTo(1);
+	}
+
+	@Test
+	@DirtiesContext
+	void canCreateAToDo() {
+		ToDo toDo = new ToDo( "Complete 30 minutes of exercise.");
+		ResponseEntity<Void> response = restTemplate.postForEntity("/todos", toDo, Void.class);
+
+		URI location = response.getHeaders().getLocation();
+		ResponseEntity<String> getResponse = restTemplate.getForEntity(location, String.class);
+
+		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+		Number id = documentContext.read("$.id");
+		String value = documentContext.read("$.value");
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(id).isNotNull();
+		assertThat(value).isEqualTo("Complete 30 minutes of exercise.");
 	}
 
 }

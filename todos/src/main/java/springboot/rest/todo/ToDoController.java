@@ -6,7 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,5 +41,17 @@ public class ToDoController {
         );
 
         return ResponseEntity.ok(page.getContent());
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> save (@RequestBody ToDo toDo, UriComponentsBuilder ucb){
+        ToDo savedToDo = toDoRepository.save(toDo);
+
+        URI location = ucb
+                .path("/todos/{id}")
+                .buildAndExpand(savedToDo.id)
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
