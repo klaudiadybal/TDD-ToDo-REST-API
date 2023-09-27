@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -15,7 +16,7 @@ public class ToDoController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ToDo> findById (@PathVariable Long id){
+    public ResponseEntity<ToDo> findById(@PathVariable Long id){
         Optional<ToDo> toDo = toDoRepository.findById(id);
 
         if(toDo.isPresent()) {
@@ -23,5 +24,11 @@ public class ToDoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ToDo>> findAll() {
+        List<ToDo> all = toDoRepository.findAll();
+        return ResponseEntity.ok(all);
     }
 }

@@ -31,4 +31,22 @@ class ToDoApplicationTests {
 
 	}
 
+	@Test
+	void shouldNotCrashWhenAskedForAnUnknownId(){
+		ResponseEntity<String> response = restTemplate.getForEntity("/todos/1000", String.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+		assertThat(response.getBody()).isBlank();
+	}
+
+	@Test
+	void canReturnAllToDos(){
+		ResponseEntity<String> response = restTemplate.getForEntity("/todos", String.class);
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		int length = documentContext.read("$.length()");
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(length).isGreaterThan(0);
+	}
+
 }
