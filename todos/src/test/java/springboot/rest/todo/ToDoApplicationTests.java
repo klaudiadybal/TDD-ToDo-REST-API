@@ -2,6 +2,7 @@ package springboot.rest.todo;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,6 +48,17 @@ class ToDoApplicationTests {
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(length).isGreaterThan(0);
+	}
+
+	@Test
+	void canReturnAPageOfToDos() {
+		ResponseEntity<String> response = restTemplate.getForEntity("/todos?page=0&size=1", String.class);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		JSONArray page = documentContext.read("$[*]");
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(page.size()).isEqualTo(1);
 	}
 
 }
