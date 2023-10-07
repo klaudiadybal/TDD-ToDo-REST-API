@@ -44,7 +44,7 @@ public class ToDoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save (@RequestBody ToDo toDo, UriComponentsBuilder ucb){
+    public ResponseEntity<Void> save(@RequestBody ToDo toDo, UriComponentsBuilder ucb){
         ToDo savedToDo = toDoRepository.save(toDo);
 
         URI location = ucb
@@ -53,5 +53,18 @@ public class ToDoController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/{requestedId}")
+    public ResponseEntity<Void> put(@PathVariable Long requestedId, @RequestBody ToDo updatedToDo) {
+        Optional<ToDo> todo = toDoRepository.findById(requestedId);
+
+        if(todo.isPresent()) {
+            ToDo updatedToDoToSave = new ToDo(todo.get().getId(), updatedToDo.getValue());
+            toDoRepository.save(updatedToDoToSave);
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
