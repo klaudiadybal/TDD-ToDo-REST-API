@@ -67,4 +67,17 @@ public class ToDoController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Optional<ToDo> todo = toDoRepository.findById(id);
+
+        if(todo.isPresent()){
+            toDoRepository.delete(todo.get());
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 }

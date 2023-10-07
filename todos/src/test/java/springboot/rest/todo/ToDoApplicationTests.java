@@ -25,7 +25,8 @@ class ToDoApplicationTests {
 
 	@Test
 	void canReturnSavedToDo() {
-		ResponseEntity<String> response = restTemplate.getForEntity("/todos/1", String.class);
+		ResponseEntity<String> response = restTemplate
+				.getForEntity("/todos/1", String.class);
 
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
 		Number id = documentContext.read("$.id");
@@ -39,7 +40,7 @@ class ToDoApplicationTests {
 
 	@Test
 	void shouldNotCrashWhenAskedForAnUnknownId(){
-		ResponseEntity<String> response = restTemplate.getForEntity("/todos/1000", String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity("/todos/-1", String.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 		assertThat(response.getBody()).isBlank();
@@ -115,5 +116,25 @@ class ToDoApplicationTests {
 				.exchange("/todos/-1", HttpMethod.PUT, request, Void.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	@DirtiesContext
+	void canDeleteAnExistingToDo() {
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.exchange("/todos/1", HttpMethod.DELETE, null, Void.class);
+
+		ResponseEntity<String> getResponse = restTemplate
+				.getForEntity("/todos/1", String.class);
+
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	void shouldNotDeleteAToDoThatDoesNotExist() {
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.exchange("/todos/-1", HttpMethod.DELETE, null, Void.class);
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 }
