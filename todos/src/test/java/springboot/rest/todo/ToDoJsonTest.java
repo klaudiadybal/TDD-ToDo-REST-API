@@ -1,6 +1,5 @@
 package springboot.rest.todo;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -36,8 +35,7 @@ public class ToDoJsonTest {
                 """;
 
 
-        assertThat(json.parse(toDo)).isEqualTo(new ToDo(1L, "Buy groceries."));
         assertThat(json.parseObject(toDo).id).isEqualTo(1);
-        assertThat(json.parseObject(toDo).value).isEqualTo("Buy groceries.");
+        assertThat(json.parseObject(toDo).text).isEqualTo("Buy groceries.");
     }
 }

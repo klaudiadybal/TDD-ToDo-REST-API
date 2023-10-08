@@ -49,7 +49,7 @@ public class ToDoController {
 
         URI location = ucb
                 .path("/todos/{id}")
-                .buildAndExpand(savedToDo.id)
+                .buildAndExpand(savedToDo.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
@@ -60,7 +60,7 @@ public class ToDoController {
         Optional<ToDo> todo = toDoRepository.findById(requestedId);
 
         if(todo.isPresent()) {
-            ToDo updatedToDoToSave = new ToDo(todo.get().getId(), updatedToDo.getValue());
+            ToDo updatedToDoToSave = new ToDo(todo.get().getId(), updatedToDo.getText());
             toDoRepository.save(updatedToDoToSave);
             return ResponseEntity.noContent().build();
         }

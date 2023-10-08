@@ -1,0 +1,1 @@
+INSERT INTO TO_DO(id, text) VALUES (100, 'Buy groceries.');

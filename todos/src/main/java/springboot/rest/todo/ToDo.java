@@ -1,28 +1,24 @@
 package springboot.rest.todo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 
-@Entity
 public class ToDo{
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String value;
+    String text;
 
     public ToDo() {
     }
 
     public ToDo(String value) {
-        this.value = value;
+        this.text = value;
     }
 
     public ToDo(Long id, String value) {
         this.id = id;
-        this.value = value;
+        this.text = value;
     }
 
     public Long getId() {
@@ -33,12 +29,12 @@ public class ToDo{
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public String getText() {
+        return text;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setText(String text) {
+        this.text = text;
     }
 }
 
